@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "eslint": "^6.5.1",
     "font-awesome": "^4.7.0",
+    "joi-browser": "^13.4.0",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
     "query-string": "^6.8.3",
