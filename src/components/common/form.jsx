@@ -29,7 +29,6 @@ class Form extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-
     const errors = this.validate(e);
     this.setState({ errors: errors || {} });
     if (errors) return;
@@ -56,16 +55,17 @@ class Form extends Component {
     );
   };
 
-  renderInput = (name, label, autoFocus) => {
+  renderInput = (name, label, type = "text", autoFocus = false) => {
     const { data, errors } = this.state;
     return (
       <Input
         name={name}
+        type={type}
         value={data[name]}
         label={label}
         autoFocus={autoFocus}
-        handleChange={this.handleChange}
-        error={errors.username}
+        onChange={this.handleChange}
+        error={errors[name]}
       />
     );
   };
