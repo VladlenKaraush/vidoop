@@ -4,14 +4,9 @@ import { getMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Form from "./common/form";
 import Joi from "joi-browser";
+import { Redirect } from "react-router-dom";
 
 class MovieDetail extends Form {
-  state = {
-    data: { title: "", genre: "", numberInStock: "", dailyRentalRate: "" },
-    genres: [],
-    errors: {}
-  };
-
   schema = {
     title: Joi.string()
       .required()
@@ -31,16 +26,33 @@ class MovieDetail extends Form {
       .label("Rate")
   };
 
-  componentDidMount() {
-    const movie = getMovie(this.props.match.params.id);
-    movie.genre = movie.genre.name;
-    const genres = getGenres().map(el => el.name);
-    this.setState({ data: movie, genres });
-    console.log(genres);
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: { title: "", genre: "", numberInStock: "", dailyRentalRate: "" },
+      genres: [],
+      errors: {}
+    };
+    const movie = getMovie(props.match.params.id);
+    if (!movie) {
+      this.state.redirect = true;
+    } else {
+      movie.genre = movie.genre.name;
+      delete movie._id;
+      this.state.data = movie;
+      this.state.genres = getGenres().map(el => el.name);
+    }
   }
 
+  doSubmit = () => {
+    // save movie change
+  };
+
   render() {
-    return (
+    console.log(this.state.redirect);
+    return this.state.redirect ? (
+      <Redirect to="/not-found" />
+    ) : (
       <div>
         <h1>Movie Form {this.props.match.params.id}</h1>
         <form onSubmit={this.handleSubmit}>

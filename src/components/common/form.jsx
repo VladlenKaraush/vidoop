@@ -13,7 +13,6 @@ class Form extends Component {
     const options = { abortEarly: false };
     const { error } = Joi.validate(this.state.data, this.schema, options);
     if (!error) return null;
-
     const errors = {};
     for (let item of error.details) {
       errors[item.path[0]] = item.message;
@@ -40,7 +39,6 @@ class Form extends Component {
   handleChange = ({ currentTarget: input }) => {
     const errors = { ...this.state.errors };
     const errorMsg = this.validateProperty(input);
-    console.log(errorMsg, errors);
     if (errorMsg) errors[input.name] = errorMsg;
     else delete errors[input.name];
 
