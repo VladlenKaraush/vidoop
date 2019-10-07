@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { getMovie, saveMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Form from "./common/form";

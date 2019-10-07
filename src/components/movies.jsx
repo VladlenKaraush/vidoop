@@ -5,6 +5,7 @@ import { paginate } from "../utils/paginate";
 import GenresList from "./common/genresList";
 import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
+import { Link } from "react-router-dom";
 import _ from "lodash";
 
 class Movies extends Component {
@@ -85,6 +86,13 @@ class Movies extends Component {
             />
           </div>
           <div className="col">
+            <Link
+              className="btn btn-primary"
+              to="movies/new"
+              style={{ marginBottom: 20 }}
+            >
+              New
+            </Link>
             {this.moviesLeftBanner(filteredMovies)}
             <MoviesTable
               moviesOnPage={paginatedMovies}
