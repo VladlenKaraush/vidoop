@@ -7,6 +7,7 @@ import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import { Link } from "react-router-dom";
 import _ from "lodash";
+import SearchBox from "./searchBox";
 
 class Movies extends Component {
   state = {
@@ -15,7 +16,8 @@ class Movies extends Component {
     pageLimit: 4,
     page: 1,
     activeGenre: "All genres",
-    sorting: { col: "title", order: "asc" }
+    sorting: { col: "title", order: "asc" },
+    query: ""
   };
 
   componentDidMount() {
@@ -46,7 +48,7 @@ class Movies extends Component {
   };
 
   handleGenreChange = activeGenre => {
-    this.setState({ activeGenre, page: 1 });
+    this.setState({ activeGenre, page: 1, query: "" });
   };
 
   handleSort = sorting => {
@@ -65,6 +67,19 @@ class Movies extends Component {
     return paginate(movies, this.state.page, this.state.pageLimit);
   };
 
+  searchMovies = movies => {
+    const { query } = this.state;
+    if (!query) return movies;
+    return movies.filter(el =>
+      el.title.toLowerCase().startsWith(query.toLowerCase())
+    );
+  };
+
+  inputQueryChange = e => {
+    console.log(e.currentTarget.value);
+    this.setState({ query: e.currentTarget.value });
+  };
+
   render() {
     const filteredMovies = this.filterByGenre(this.state.movies);
     const sortedMovies = _.orderBy(
@@ -72,7 +87,9 @@ class Movies extends Component {
       [this.state.sorting.col],
       [this.state.sorting.order]
     );
-    const paginatedMovies = this.paginateMovies(sortedMovies);
+    const searchedMovies = this.searchMovies(sortedMovies);
+    const paginatedMovies = this.paginateMovies(searchedMovies);
+
     return (
       <div>
         <div className="row"></div>
@@ -93,7 +110,11 @@ class Movies extends Component {
             >
               New
             </Link>
-            {this.moviesLeftBanner(filteredMovies)}
+            {this.moviesLeftBanner(searchedMovies)}
+            <SearchBox
+              query={this.state.query}
+              inputQueryChange={this.inputQueryChange}
+            />
             <MoviesTable
               moviesOnPage={paginatedMovies}
               handleDeleteById={this.handleDeleteById}
@@ -104,7 +125,7 @@ class Movies extends Component {
             <Pagination
               onClick={this.handlePagination}
               active={this.state.page}
-              moviesTotal={filteredMovies.length}
+              moviesTotal={searchedMovies.length}
               pageSize={this.state.pageLimit}
             />
           </div>
