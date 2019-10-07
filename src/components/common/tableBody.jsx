@@ -4,7 +4,7 @@ import _ from "lodash";
 const TableBody = props => {
   const { data, columns } = props;
 
-  const renderLine = (item, col) => {
+  const renderCell = (item, col) => {
     if (col.content) {
       return col.content(item);
     }
@@ -16,7 +16,7 @@ const TableBody = props => {
       {data.map(item => (
         <tr key={item._id}>
           {columns.map(col => (
-            <td key={col.label || col.key}>{renderLine(item, col)}</td>
+            <td key={col.label || col.key}>{renderCell(item, col)}</td>
           ))}
         </tr>
       ))}

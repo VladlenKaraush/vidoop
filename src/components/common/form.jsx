@@ -28,12 +28,14 @@ class Form extends Component {
   };
 
   handleSubmit = e => {
+    console.log("submit ");
     e.preventDefault();
     const errors = this.validate(e);
+    console.log(errors);
     this.setState({ errors: errors || {} });
     if (errors) return;
 
-    this.doSumbit();
+    this.doSubmit();
   };
 
   handleChange = ({ currentTarget: input }) => {
@@ -70,11 +72,11 @@ class Form extends Component {
     );
   };
 
-  renderSelect = (name, label, options, selectedOption) => {
+  renderSelect = (name, label, options) => {
     return (
       <Select
         name={name}
-        selectedOption={selectedOption}
+        value={this.state.data[name]}
         options={options}
         label={label}
         onChange={this.handleChange}

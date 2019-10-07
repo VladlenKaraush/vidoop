@@ -1,19 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { getMovie } from "../services/fakeMovieService";
+import { getMovie, saveMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
 import Form from "./common/form";
 import Joi from "joi-browser";
-import { Redirect } from "react-router-dom";
 
-class MovieDetail extends Form {
+class MovieForm extends Form {
+  state = {
+    data: { title: "", genreId: "", numberInStock: "", dailyRentalRate: "" },
+    genres: [],
+    errors: {}
+  };
   schema = {
     title: Joi.string()
       .required()
       .label("Title"),
-    genre: Joi.string()
+    genreId: Joi.string()
       .required()
       .label("Genre"),
+    _id: Joi.string(),
     numberInStock: Joi.number()
       .required()
       .min(1)
@@ -26,51 +31,50 @@ class MovieDetail extends Form {
       .label("Rate")
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: { title: "", genre: "", numberInStock: "", dailyRentalRate: "" },
-      genres: [],
-      errors: {}
-    };
-    const movie = getMovie(props.match.params.id);
-    if (!movie) {
-      this.state.redirect = true;
-    } else {
-      movie.genre = movie.genre.name;
-      delete movie._id;
-      this.state.data = movie;
-      this.state.genres = getGenres().map(el => el.name);
-    }
+  componentDidMount() {
+    this.setState({ genres: getGenres() });
+
+    const movieId = this.props.match.params.id;
+    if (movieId === "new") return;
+
+    const movie = getMovie(movieId);
+    if (!movie) return this.props.history.replace("/not-found");
+
+    this.setState({ genres: getGenres(), data: this.mapToViewModel(movie) });
   }
 
+  mapToViewModel = movie => {
+    return {
+      _id: movie._id,
+      title: movie.title,
+      genreId: movie.genre._id,
+      numberInStock: movie.numberInStock,
+      dailyRentalRate: movie.dailyRentalRate
+    };
+  };
+
   doSubmit = () => {
+    console.log("MovieDetail: ", this.state);
     // save movie change
+    saveMovie(this.state.data);
+    this.props.history.push("/movies");
   };
 
   render() {
-    console.log(this.state.redirect);
-    return this.state.redirect ? (
-      <Redirect to="/not-found" />
-    ) : (
+    console.log(this.handleSubmit);
+    return (
       <div>
         <h1>Movie Form {this.props.match.params.id}</h1>
         <form onSubmit={this.handleSubmit}>
           {this.renderInput("title", "Title", "text", true)}
-          {this.renderSelect(
-            "genre",
-            "Genre",
-            this.state.genres,
-            this.state.data.genre
-          )}
+          {this.renderSelect("genreId", "Genre", this.state.genres)}
           {this.renderInput("numberInStock", "Number in stock")}
           {this.renderInput("dailyRentalRate", "Rate")}
-
-          <Link to="/movies">{this.renderButton("Save")}</Link>
+          {this.renderButton("Save")}
         </form>
       </div>
     );
   }
 }
 
-export default MovieDetail;
+export default MovieForm;
