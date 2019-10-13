@@ -14,20 +14,21 @@ const GenresList = props => {
       >
         All genres
       </li>
-      {props.genres.map(genre => (
-        <li
-          key={genre.name}
-          className={
-            props.genre === genre.name
-              ? "list-group-item active"
-              : "list-group-item"
-          }
-          style={{ cursor: "pointer" }}
-          onClick={() => props.onGenreChange(genre.name)}
-        >
-          {genre.name}
-        </li>
-      ))}
+      {props.genres &&
+        props.genres.map(genre => (
+          <li
+            key={genre.name}
+            className={
+              props.genre === genre.name
+                ? "list-group-item active"
+                : "list-group-item"
+            }
+            style={{ cursor: "pointer" }}
+            onClick={() => props.onGenreChange(genre.name)}
+          >
+            {genre.name}
+          </li>
+        ))}
     </ul>
   );
 };

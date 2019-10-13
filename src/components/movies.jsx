@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
+// import { getMovies } from "../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../services/movieService";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
 import GenresList from "./common/genresList";
-import { getGenres } from "../services/fakeGenreService";
+import { getGenres } from "../services/genreService";
 import MoviesTable from "./moviesTable";
 import { Link } from "react-router-dom";
 import _ from "lodash";
@@ -20,8 +21,12 @@ class Movies extends Component {
     query: ""
   };
 
-  componentDidMount() {
-    this.setState({ genres: getGenres(), movies: getMovies() });
+  async componentDidMount() {
+    const { data: genres } = await getGenres();
+    const { data: movies } = await getMovies();
+    console.log(genres);
+    console.log(movies);
+    this.setState({ genres, movies });
   }
 
   moviesLeftBanner = moviesToRender => {
@@ -33,8 +38,18 @@ class Movies extends Component {
   };
 
   handleDeleteById = id => {
+    const allMovies = this.state.movies;
     const updatedMovies = this.state.movies.filter(movie => movie._id !== id);
     this.setState({ movies: updatedMovies });
+
+    try {
+      deleteMovie(id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        console.log("movie is already deleted");
+      }
+      this.setState({ movies: allMovies });
+    }
   };
   handleLike = movie => {
     const movies = [...this.state.movies];
@@ -76,8 +91,7 @@ class Movies extends Component {
   };
 
   inputQueryChange = e => {
-    console.log(e.currentTarget.value);
-    this.setState({ query: e.currentTarget.value });
+    this.setState({ query: e.currentTarget.value, page: 1 });
   };
 
   render() {
