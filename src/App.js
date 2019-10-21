@@ -1,9 +1,11 @@
 import React from "react";
 import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
 import Movies from "./components/movies";
 import Customers from "./components/customers";
 import Rentals from "./components/rentals";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import NavBar from "./components/navBar";
 import NotFound from "./components/notFound";
 import MovieDetail from "./components/movieDetail";
@@ -13,6 +15,7 @@ import RegisterForm from "./components/registerForm";
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer />
       <NavBar />
       <div className="container" style={{ paddingTop: 50 }}>
         <Switch>
