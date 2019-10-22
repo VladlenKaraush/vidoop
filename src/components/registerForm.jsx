@@ -25,8 +25,10 @@ class RegisterForm extends Form {
 
   doSubmit = async () => {
     try {
-      const result = await userService.register(this.state.data);
-      console.log(result);
+      const response = await userService.register(this.state.data);
+      console.log(response);
+      localStorage.setItem("token", response.headers["x-auth-token"]);
+      this.props.history.push("/");
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error("400 bad request");
