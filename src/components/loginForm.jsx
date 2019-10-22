@@ -1,6 +1,9 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
+import httpService from "../services/httpService";
+import { auth } from "../services/userService";
+import { toast } from "react-toastify";
 
 class LoginForm extends Form {
   state = {
@@ -17,9 +20,19 @@ class LoginForm extends Form {
       .label("Password")
   };
 
-  doSumbit = () => {
+  doSubmit = async () => {
     console.log("Form submission");
     //call server
+
+    try {
+      const { data: token } = await auth(this.state.data);
+      console.log(token);
+    } catch (ex) {
+      if (ex.response && ex.response === 400) {
+        toast.error("400 bad request");
+        console.log(ex.response);
+      }
+    }
   };
 
   render() {
