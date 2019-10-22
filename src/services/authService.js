@@ -3,6 +3,16 @@ import { apiEndpoint } from "../config.json";
 
 const apiUrl = apiEndpoint + "/api/auth";
 
-export function login(email, password) {
-  return http.post(apiUrl, { email, password });
+export async function login(email, password) {
+  const { data: jwt } = await http.post(apiUrl, { email, password });
+  localStorage.setItem("token", jwt);
 }
+
+export function logout() {
+  localStorage.removeItem("token");
+}
+
+export default {
+  login,
+  logout
+};

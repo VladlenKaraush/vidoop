@@ -14,15 +14,19 @@ import RegisterForm from "./components/registerForm";
 
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
+import Logout from "./components/logoutPage";
 
 class App extends Component {
-  state = {};
+  state = {
+    user: null
+  };
 
   componentDidMount() {
     try {
       const jwt = localStorage.getItem("token");
       const user = jwtDecode(jwt);
       console.log(user);
+      this.setState({ user });
     } catch (ignore) {}
   }
   render() {
@@ -38,6 +42,7 @@ class App extends Component {
             <Route path="/customers" component={Customers} />
             <Route path="/login" component={LoginForm} />
             <Route path="/register" component={RegisterForm} />
+            <Route path="/logout" component={Logout} />
             <Route path="/not-found" component={NotFound} />
             <Redirect from="/" exact to="/movies" />
             <Redirect to="/not-found" />
