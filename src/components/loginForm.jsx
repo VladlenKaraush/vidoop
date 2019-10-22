@@ -1,8 +1,7 @@
 import React from "react";
 import Joi from "joi-browser";
 import Form from "./common/form";
-import httpService from "../services/httpService";
-import { auth } from "../services/userService";
+import { login } from "../services/authService";
 import { toast } from "react-toastify";
 
 class LoginForm extends Form {
@@ -21,16 +20,19 @@ class LoginForm extends Form {
   };
 
   doSubmit = async () => {
-    console.log("Form submission");
-    //call server
-
+    const { username, password } = this.state.data;
     try {
-      const { data: token } = await auth(this.state.data);
+      const { data: token } = await login(username, password);
       console.log(token);
+      localStorage.setItem("token", token);
+      this.props.history.push("/");
     } catch (ex) {
-      if (ex.response && ex.response === 400) {
+      if (ex.response && ex.response.status === 400) {
         toast.error("400 bad request");
         console.log(ex.response);
+        const errors = { ...this.state.errors };
+        errors.username = ex.response.data;
+        this.setState({ errors });
       }
     }
   };
