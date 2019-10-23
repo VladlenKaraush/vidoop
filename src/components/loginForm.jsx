@@ -1,8 +1,10 @@
 import React from "react";
-import Joi from "joi-browser";
-import Form from "./common/form";
-import { login } from "../services/authService";
 import { toast } from "react-toastify";
+import Joi from "joi-browser";
+import { Redirect } from "react-router-dom";
+
+import Form from "./common/form";
+import authService, { login } from "../services/authService";
 
 class LoginForm extends Form {
   state = {
@@ -23,7 +25,9 @@ class LoginForm extends Form {
     const { username, password } = this.state.data;
     try {
       await login(username, password);
-      window.location = "/";
+
+      const { state } = this.props.location;
+      window.location = state ? state.from.pathname : "/";
     } catch (ex) {
       if (ex.response && ex.response.status === 400) {
         toast.error("400 bad request");
@@ -36,6 +40,7 @@ class LoginForm extends Form {
   };
 
   render() {
+    if (authService.getCurrentUser()) return <Redirect to="/" />;
     return (
       <div>
         <h1>Login</h1>

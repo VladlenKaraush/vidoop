@@ -104,6 +104,7 @@ class Movies extends Component {
     );
     const searchedMovies = this.searchMovies(sortedMovies);
     const paginatedMovies = this.paginateMovies(searchedMovies);
+    const { user } = this.props;
 
     return (
       <div>
@@ -118,13 +119,15 @@ class Movies extends Component {
             />
           </div>
           <div className="col">
-            <Link
-              className="btn btn-primary"
-              to="movies/new"
-              style={{ marginBottom: 20 }}
-            >
-              New
-            </Link>
+            {user && (
+              <Link
+                className="btn btn-primary"
+                to="movies/new"
+                style={{ marginBottom: 20 }}
+              >
+                New
+              </Link>
+            )}
             {this.moviesLeftBanner(searchedMovies)}
             <SearchBox
               query={this.state.query}
