@@ -25,6 +25,7 @@ class Movies extends Component {
   async componentDidMount() {
     const { data: genres } = await getGenres();
     const { data: movies } = await getMovies();
+    console.log(movies);
     this.setState({ genres, movies });
   }
 
