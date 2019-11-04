@@ -33,7 +33,7 @@ class RegisterForm extends Form {
       if (ex.response && ex.response.status === 400) {
         toast.error("400 bad request");
         const errors = { ...this.state.errors };
-        errors.username = ex.response.data;
+        errors.email = ex.response.data;
         this.setState({ errors });
       }
     }

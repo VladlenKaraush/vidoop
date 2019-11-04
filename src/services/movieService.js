@@ -11,7 +11,6 @@ export async function getMovies() {
 }
 
 export async function getMovie(id) {
-  console.log("request url: ", getMovieUrl(id));
   return await http.get(getMovieUrl(id));
 }
 
